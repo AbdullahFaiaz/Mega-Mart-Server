@@ -362,44 +362,6 @@ const logger = async(req,res,next) =>{
 //   res.send({ user });
 // })
 
-// //delete user
-// app.delete('/users/delete/:id',async(req,res)=>{
-//   const id = req.params.id
-//   const query = {_id: new ObjectId(id)}
-//   const result = await userCollection.deleteOne(query)
-//   res.send(result)
-// })
-
-
-// //query 
-//     app.get("/myAddedProperties", async(req,res)=>{
-//       //req.user (=decoded) is coming from verifyToken
-//     // verify email
-//       // if(req.query.email !== req.user.email){
-//       //   return res.status(403).send({message:'forbidden access'})
-//       // }
-
-//       let query = {}
-//       // const options = {
-//       //   projection: { product_type: 1, image: 1, price:1 },
-//       // };
-//       if(req.query.email){
-//         query = {email: req.query.email}
-//         console.log(query)
-//       }
-//       const result = await propertyCollection.find(query).toArray()
-//       res.send(result)
-//     })
-
-//     //delete my added property
-// app.delete('/myAddedProperties/:id',async(req,res)=>{
-//   const id = req.params.id
-//   console.log('plz delete property ', id)
-//   const query = {_id: new ObjectId(id)}
-//   const result = await propertyCollection.deleteOne(query)
-//   res.send(result)
-// })
-
 
 
 
