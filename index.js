@@ -400,32 +400,6 @@ const logger = async(req,res,next) =>{
 //   res.send(result)
 // })
 
-//     //post from add page
-//     app.post("/addProperty", async(req,res)=>{
-//         const newProperty = req.body
-//             const result = await propertyCollection.insertOne(newProperty); 
-//             res.send(result)
-//     })
-
-//     app.get('/wishlistOne', async(req,res)=> {
-//       try {
-//         const id = req.query.id;
-
-//         const wishlistItems = await wishlistCollection.findOne({ _id: new ObjectId(id) })
-    
-//         // Step 4: Send the properties as the response
-//         res.send(wishlistItems);
-//       } catch (error) {
-//         console.error('Error fetching a specific wish:', error);
-//         res.status(500).send({ error: 'Failed to fetch a specific wish' });
-//       }
-//     });
-
-//     app.get('/wishlist', async (req, res) => {
-//       try {
-//         const email = req.query.email;
-    
-
 
 
 
