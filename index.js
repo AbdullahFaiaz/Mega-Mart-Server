@@ -337,32 +337,6 @@ const logger = async(req,res,next) =>{
 //   //   return res.status(403).send({ message: 'forbidden access' })
 //   // }
 
-//   const query = { email: email };
-//   const user = await userCollection.findOne(query);
-//   let agent = false;
-//   if (user) {
-//     agent = user?.role === 'agent';
-//   }
-//   res.send({ agent });
-// })
-// // isUser 
-// app.get('/users/user/:email', async (req, res) => {
-//   const email = req.params.email;
-
-//   // if (email !== req.decoded.email) {
-//   //   return res.status(403).send({ message: 'forbidden access' })
-//   // }
-
-//   const query = { email: email };
-//   const theUser = await userCollection.findOne(query);
-//   let user = false;
-//   if (user) {
-//     user = theUser?.role === 'user';
-//   }
-//   res.send({ user });
-// })
-
-
 
 
 
