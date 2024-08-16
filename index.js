@@ -445,11 +445,6 @@ const logger = async(req,res,next) =>{
 
 // // agent profiles:
 
-// app.get("/agentProfiles", async(req,res)=> {
-//   const result = await userCollection.find({role: 'agent'}).toArray()
-//   res.send(result)
-// } )
-
 
 
 
