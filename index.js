@@ -437,14 +437,6 @@ const logger = async(req,res,next) =>{
 //     });
 
 
-// //all reviews from manage reviews page
-// app.get('/allReviews', async(req,res)=>{
-//   const result = await reviewCollection.find().toArray()
-//   res.send(result)
-// })
-
-// // agent profiles:
-
 
 
 
