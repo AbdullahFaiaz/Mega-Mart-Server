@@ -425,16 +425,6 @@ const logger = async(req,res,next) =>{
 //       try {
 //         const email = req.query.email;
     
-//         // Step 1: Find wishlist items for the user and project only propertyId
-//         const wishlistItems = await wishlistCollection.find({ WisherEmail: email }).toArray();
-    
-//         // Step 4: Send the properties as the response
-//         res.send(wishlistItems);
-//       } catch (error) {
-//         console.error('Error fetching wishlist:', error);
-//         res.status(500).send({ error: 'Failed to fetch wishlist' });
-//       }
-//     });
 
 
 
