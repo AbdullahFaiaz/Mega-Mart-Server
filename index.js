@@ -103,28 +103,28 @@ const logger = async(req,res,next) =>{
       })
     }
 
-    // use verify admin after verifyToken
-    const verifyAdmin = async (req, res, next) => {
-      const email = req.decoded.email;
-      const query = { email: email };
-      const user = await userCollection.findOne(query);
-      const isAdmin = user?.role === 'admin';
-      if (!isAdmin) {
-        return res.status(403).send({ message: 'forbidden access' });
-      }
-      next();
-    }
-    // use verify agent after verifyToken
-    const verifyAgent = async (req, res, next) => {
-      const email = req.decoded.email;
-      const query = { email: email };
-      const user = await userCollection.findOne(query);
-      const isAgent = user?.role === 'agent';
-      if (!isAgent) {
-        return res.status(403).send({ message: 'forbidden access' });
-      }
-      next();
-    }
+//     // use verify admin after verifyToken
+//     const verifyAdmin = async (req, res, next) => {
+//       const email = req.decoded.email;
+//       const query = { email: email };
+//       const user = await userCollection.findOne(query);
+//       const isAdmin = user?.role === 'admin';
+//       if (!isAdmin) {
+//         return res.status(403).send({ message: 'forbidden access' });
+//       }
+//       next();
+//     }
+//     // use verify agent after verifyToken
+//     const verifyAgent = async (req, res, next) => {
+//       const email = req.decoded.email;
+//       const query = { email: email };
+//       const user = await userCollection.findOne(query);
+//       const isAgent = user?.role === 'agent';
+//       if (!isAgent) {
+//         return res.status(403).send({ message: 'forbidden access' });
+//       }
+//       next();
+//     }
 
 
 
@@ -136,488 +136,408 @@ const logger = async(req,res,next) =>{
 
 
 
-// get role from useRole hook
-    app.get("/user-role/:email",verifyToken, async(req,res)=> {
-      const email = req.params.email
-      const result = await userCollection.findOne({email: email},{role:1})
-      res.send(result)
-    })
+// // get role from useRole hook
+//     app.get("/user-role/:email",verifyToken, async(req,res)=> {
+//       const email = req.params.email
+//       const result = await userCollection.findOne({email: email},{role:1})
+//       res.send(result)
+//     })
 
-// get all users
-      app.get("/users",verifyToken,verifyAdmin, async(req,res)=> {
-        const result = await userCollection.find().toArray()
-        res.send(result)
-      } )
-//making an admin
+// // get all users
+//       app.get("/users",verifyToken,verifyAdmin, async(req,res)=> {
+//         const result = await userCollection.find().toArray()
+//         res.send(result)
+//       } )
+// //making an admin
 
-app.patch("/users/admin/:id", async (req, res) => {
-  const id = req.params.id;
-  const email = req.body.email;
-  const role = req.body.role;
+// app.patch("/users/admin/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const email = req.body.email;
+//   const role = req.body.role;
 
-  try {
-    const objectId = new ObjectId(id); // Ensure id is valid ObjectId
-    const filter = { _id: objectId };
-    const updatedDoc = { $set: { role: role } };
-    const updateProperty = { $set: { role: 'admin' } };
+//   try {
+//     const objectId = new ObjectId(id); // Ensure id is valid ObjectId
+//     const filter = { _id: objectId };
+//     const updatedDoc = { $set: { role: role } };
+//     const updateProperty = { $set: { role: 'admin' } };
 
-    // Log the email being used for the query
-    console.log('Email for update:', email);
+//     // Log the email being used for the query
+//     console.log('Email for update:', email);
 
-    // Update the property collection
-    const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
-    console.log('updatePropertyResult:', updatePropertyResult);
+//     // Update the property collection
+//     const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
+//     console.log('updatePropertyResult:', updatePropertyResult);
 
-    // Update the user collection
-    const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
-    console.log('updateUserResult:', updateUserResult);
+//     // Update the user collection
+//     const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
+//     console.log('updateUserResult:', updateUserResult);
 
-    res.send(updateUserResult);
-  } catch (error) {
-    console.error('Error during update:', error);
-    res.status(500).send({ error: "Failed to update user role to admin" });
-  }
-});
-
-
-
-
-      // app.patch("/users/admin/:id", async(req,res)=> {
-      //   const id = req.params.id;
-      //   const role = req.body
-      //   const filter = {_id: new ObjectId(id)};
-      //   const updatedDoc = {
-      //     $set: role
-
-      //   }
-      //   const result = await userCollection.updateOne(filter,updatedDoc)
-      //   res.send(result)
-      // })
+//     res.send(updateUserResult);
+//   } catch (error) {
+//     console.error('Error during update:', error);
+//     res.status(500).send({ error: "Failed to update user role to admin" });
+//   }
+// });
 
 
 
 
+//       // app.patch("/users/admin/:id", async(req,res)=> {
+//       //   const id = req.params.id;
+//       //   const role = req.body
+//       //   const filter = {_id: new ObjectId(id)};
+//       //   const updatedDoc = {
+//       //     $set: role
 
-app.patch("/users/agent/:id", async (req, res) => {
-  const id = req.params.id;
-  const email = req.body.email;
-  const role = req.body.role;
-
-  try {
-    const objectId = new ObjectId(id); // Ensure id is valid ObjectId
-    const filter = { _id: objectId };
-    const updatedDoc = { $set: { role: role } };
-    const updateProperty = { $set: { role: 'agent' } };
-
-    // Log the email being used for the query
-    console.log('Email for update:', email);
-
-    // Update the property collection
-    const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
-    console.log('updatePropertyResult:', updatePropertyResult);
-
-    // Update the user collection
-    const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
-    console.log('updateUserResult:', updateUserResult);
-
-    res.send(updateUserResult);
-  } catch (error) {
-    console.error('Error during update:', error);
-    res.status(500).send({ error: "Failed to update user role to agent" });
-  }
-});
+//       //   }
+//       //   const result = await userCollection.updateOne(filter,updatedDoc)
+//       //   res.send(result)
+//       // })
 
 
 
-app.patch("/users/user/:id", async (req, res) => {
-  const id = req.params.id;
-  const email = req.body.email;
-  const role = req.body.role;
 
-  try {
-    const objectId = new ObjectId(id); // Ensure id is valid ObjectId
-    const filter = { _id: objectId };
-    const updatedDoc = { $set: { role: role } };
-    const updateProperty = { $set: { role: 'user' } };
 
-    // Log the email being used for the query
-    console.log('Email for update:', email);
+// app.patch("/users/agent/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const email = req.body.email;
+//   const role = req.body.role;
 
-    // Update the property collection
-    const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
-    console.log('updatePropertyResult:', updatePropertyResult);
+//   try {
+//     const objectId = new ObjectId(id); // Ensure id is valid ObjectId
+//     const filter = { _id: objectId };
+//     const updatedDoc = { $set: { role: role } };
+//     const updateProperty = { $set: { role: 'agent' } };
 
-    // Update the user collection
-    const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
-    console.log('updateUserResult:', updateUserResult);
+//     // Log the email being used for the query
+//     console.log('Email for update:', email);
 
-    res.send(updateUserResult);
-  } catch (error) {
-    console.error('Error during update:', error);
-    res.status(500).send({ error: "Failed to update user role to user" });
-  }
-});
+//     // Update the property collection
+//     const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
+//     console.log('updatePropertyResult:', updatePropertyResult);
 
+//     // Update the user collection
+//     const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
+//     console.log('updateUserResult:', updateUserResult);
+
+//     res.send(updateUserResult);
+//   } catch (error) {
+//     console.error('Error during update:', error);
+//     res.status(500).send({ error: "Failed to update user role to agent" });
+//   }
+// });
+
+
+
+// app.patch("/users/user/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const email = req.body.email;
+//   const role = req.body.role;
+
+//   try {
+//     const objectId = new ObjectId(id); // Ensure id is valid ObjectId
+//     const filter = { _id: objectId };
+//     const updatedDoc = { $set: { role: role } };
+//     const updateProperty = { $set: { role: 'user' } };
+
+//     // Log the email being used for the query
+//     console.log('Email for update:', email);
+
+//     // Update the property collection
+//     const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
+//     console.log('updatePropertyResult:', updatePropertyResult);
+
+//     // Update the user collection
+//     const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
+//     console.log('updateUserResult:', updateUserResult);
+
+//     res.send(updateUserResult);
+//   } catch (error) {
+//     console.error('Error during update:', error);
+//     res.status(500).send({ error: "Failed to update user role to user" });
+//   }
+// });
+
+// // app.get('/fraudUser', async (req, res) => {
+// //   const id = req.query.id
+// //   const result = await userCollection.findOne({_id: new ObjectId(id)})
+// //   res.send(result)
+
+// // })
 // app.get('/fraudUser', async (req, res) => {
-//   const id = req.query.id
-//   const result = await userCollection.findOne({_id: new ObjectId(id)})
-//   res.send(result)
+//   const id = req.query.id;
 
+//   // Validate the id
+//   if (!ObjectId.isValid(id)) {
+//     return res.status(400).send({ error: 'Invalid ID format' });
+//   }
+
+//   try {
+//     const result = await userCollection.findOne({ _id: new ObjectId(id) });
+//     res.send(result);
+//   } catch (error) {
+//     console.error('Error fetching user:', error);
+//     res.status(500).send({ error: 'An error occurred while fetching the user' });
+//   }
+// });
+
+
+// // Marking as fraud
+// app.patch("/users/fraud/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const email = req.body.email;
+//   const role = req.body.role;
+
+//   try {
+//     const objectId = new ObjectId(id); // Ensure id is valid ObjectId
+//     const filter = { _id: objectId };
+//     const updatedDoc = { $set: { role: role } };
+//     const updateProperty = { $set: { role: 'fraud' } };
+
+//     // Log the email being used for the query
+//     console.log('Email for update:', email);
+
+//     // Update the property collection
+//     const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
+//     console.log('updatePropertyResult:', updatePropertyResult);
+
+//     // Update the user collection
+//     const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
+//     console.log('updateUserResult:', updateUserResult);
+
+//     res.send(updateUserResult);
+//   } catch (error) {
+//     console.error('Error during update:', error);
+//     res.status(500).send({ error: "Failed to update user role to fraud" });
+//   }
+// });
+
+// // isAdmin 
+// app.get('/users/admin/:email', async (req, res) => {
+//   const email = req.params.email;
+
+//   // if (email !== req.decoded.email) {
+//   //   return res.status(403).send({ message: 'forbidden access' })
+//   // }
+
+//   const query = { email: email };
+//   const user = await userCollection.findOne(query);
+//   let admin = false;
+//   if (user) {
+//     admin = user?.role === 'admin';
+//   }
+//   res.send({ admin });
 // })
-app.get('/fraudUser', async (req, res) => {
-  const id = req.query.id;
 
-  // Validate the id
-  if (!ObjectId.isValid(id)) {
-    return res.status(400).send({ error: 'Invalid ID format' });
-  }
+// // isAgent 
+// app.get('/users/agent/:email', async (req, res) => {
+//   const email = req.params.email;
 
-  try {
-    const result = await userCollection.findOne({ _id: new ObjectId(id) });
-    res.send(result);
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).send({ error: 'An error occurred while fetching the user' });
-  }
-});
+//   // if (email !== req.decoded.email) {
+//   //   return res.status(403).send({ message: 'forbidden access' })
+//   // }
 
+//   const query = { email: email };
+//   const user = await userCollection.findOne(query);
+//   let agent = false;
+//   if (user) {
+//     agent = user?.role === 'agent';
+//   }
+//   res.send({ agent });
+// })
+// // isUser 
+// app.get('/users/user/:email', async (req, res) => {
+//   const email = req.params.email;
 
-// Marking as fraud
-app.patch("/users/fraud/:id", async (req, res) => {
-  const id = req.params.id;
-  const email = req.body.email;
-  const role = req.body.role;
+//   // if (email !== req.decoded.email) {
+//   //   return res.status(403).send({ message: 'forbidden access' })
+//   // }
 
-  try {
-    const objectId = new ObjectId(id); // Ensure id is valid ObjectId
-    const filter = { _id: objectId };
-    const updatedDoc = { $set: { role: role } };
-    const updateProperty = { $set: { role: 'fraud' } };
+//   const query = { email: email };
+//   const theUser = await userCollection.findOne(query);
+//   let user = false;
+//   if (user) {
+//     user = theUser?.role === 'user';
+//   }
+//   res.send({ user });
+// })
 
-    // Log the email being used for the query
-    console.log('Email for update:', email);
-
-    // Update the property collection
-    const updatePropertyResult = await propertyCollection.updateMany({ email: email }, updateProperty);
-    console.log('updatePropertyResult:', updatePropertyResult);
-
-    // Update the user collection
-    const updateUserResult = await userCollection.updateOne(filter, updatedDoc);
-    console.log('updateUserResult:', updateUserResult);
-
-    res.send(updateUserResult);
-  } catch (error) {
-    console.error('Error during update:', error);
-    res.status(500).send({ error: "Failed to update user role to fraud" });
-  }
-});
-
-// isAdmin 
-app.get('/users/admin/:email', async (req, res) => {
-  const email = req.params.email;
-
-  // if (email !== req.decoded.email) {
-  //   return res.status(403).send({ message: 'forbidden access' })
-  // }
-
-  const query = { email: email };
-  const user = await userCollection.findOne(query);
-  let admin = false;
-  if (user) {
-    admin = user?.role === 'admin';
-  }
-  res.send({ admin });
-})
-
-// isAgent 
-app.get('/users/agent/:email', async (req, res) => {
-  const email = req.params.email;
-
-  // if (email !== req.decoded.email) {
-  //   return res.status(403).send({ message: 'forbidden access' })
-  // }
-
-  const query = { email: email };
-  const user = await userCollection.findOne(query);
-  let agent = false;
-  if (user) {
-    agent = user?.role === 'agent';
-  }
-  res.send({ agent });
-})
-// isUser 
-app.get('/users/user/:email', async (req, res) => {
-  const email = req.params.email;
-
-  // if (email !== req.decoded.email) {
-  //   return res.status(403).send({ message: 'forbidden access' })
-  // }
-
-  const query = { email: email };
-  const theUser = await userCollection.findOne(query);
-  let user = false;
-  if (user) {
-    user = theUser?.role === 'user';
-  }
-  res.send({ user });
-})
-
-//delete user
-app.delete('/users/delete/:id',async(req,res)=>{
-  const id = req.params.id
-  const query = {_id: new ObjectId(id)}
-  const result = await userCollection.deleteOne(query)
-  res.send(result)
-})
+// //delete user
+// app.delete('/users/delete/:id',async(req,res)=>{
+//   const id = req.params.id
+//   const query = {_id: new ObjectId(id)}
+//   const result = await userCollection.deleteOne(query)
+//   res.send(result)
+// })
 
 
-//query 
-    app.get("/myAddedProperties", async(req,res)=>{
-      //req.user (=decoded) is coming from verifyToken
-    // verify email
-      // if(req.query.email !== req.user.email){
-      //   return res.status(403).send({message:'forbidden access'})
-      // }
+// //query 
+//     app.get("/myAddedProperties", async(req,res)=>{
+//       //req.user (=decoded) is coming from verifyToken
+//     // verify email
+//       // if(req.query.email !== req.user.email){
+//       //   return res.status(403).send({message:'forbidden access'})
+//       // }
 
-      let query = {}
-      // const options = {
-      //   projection: { product_type: 1, image: 1, price:1 },
-      // };
-      if(req.query.email){
-        query = {email: req.query.email}
-        console.log(query)
-      }
-      const result = await propertyCollection.find(query).toArray()
-      res.send(result)
-    })
+//       let query = {}
+//       // const options = {
+//       //   projection: { product_type: 1, image: 1, price:1 },
+//       // };
+//       if(req.query.email){
+//         query = {email: req.query.email}
+//         console.log(query)
+//       }
+//       const result = await propertyCollection.find(query).toArray()
+//       res.send(result)
+//     })
 
-    //delete my added property
-app.delete('/myAddedProperties/:id',async(req,res)=>{
-  const id = req.params.id
-  console.log('plz delete property ', id)
-  const query = {_id: new ObjectId(id)}
-  const result = await propertyCollection.deleteOne(query)
-  res.send(result)
-})
+//     //delete my added property
+// app.delete('/myAddedProperties/:id',async(req,res)=>{
+//   const id = req.params.id
+//   console.log('plz delete property ', id)
+//   const query = {_id: new ObjectId(id)}
+//   const result = await propertyCollection.deleteOne(query)
+//   res.send(result)
+// })
 
-    //post from add page
-    app.post("/addProperty", async(req,res)=>{
-        const newProperty = req.body
-            const result = await propertyCollection.insertOne(newProperty); 
-            res.send(result)
-    })
+//     //post from add page
+//     app.post("/addProperty", async(req,res)=>{
+//         const newProperty = req.body
+//             const result = await propertyCollection.insertOne(newProperty); 
+//             res.send(result)
+//     })
 
-    app.get('/wishlistOne', async(req,res)=> {
-      try {
-        const id = req.query.id;
+//     app.get('/wishlistOne', async(req,res)=> {
+//       try {
+//         const id = req.query.id;
 
-        const wishlistItems = await wishlistCollection.findOne({ _id: new ObjectId(id) })
+//         const wishlistItems = await wishlistCollection.findOne({ _id: new ObjectId(id) })
     
-        // Step 4: Send the properties as the response
-        res.send(wishlistItems);
-      } catch (error) {
-        console.error('Error fetching a specific wish:', error);
-        res.status(500).send({ error: 'Failed to fetch a specific wish' });
-      }
-    });
+//         // Step 4: Send the properties as the response
+//         res.send(wishlistItems);
+//       } catch (error) {
+//         console.error('Error fetching a specific wish:', error);
+//         res.status(500).send({ error: 'Failed to fetch a specific wish' });
+//       }
+//     });
 
-    app.get('/wishlist', async (req, res) => {
-      try {
-        const email = req.query.email;
+//     app.get('/wishlist', async (req, res) => {
+//       try {
+//         const email = req.query.email;
     
-        // Step 1: Find wishlist items for the user and project only propertyId
-        const wishlistItems = await wishlistCollection.find({ WisherEmail: email }).toArray();
+//         // Step 1: Find wishlist items for the user and project only propertyId
+//         const wishlistItems = await wishlistCollection.find({ WisherEmail: email }).toArray();
     
-        // Step 4: Send the properties as the response
-        res.send(wishlistItems);
-      } catch (error) {
-        console.error('Error fetching wishlist:', error);
-        res.status(500).send({ error: 'Failed to fetch wishlist' });
-      }
-    });
+//         // Step 4: Send the properties as the response
+//         res.send(wishlistItems);
+//       } catch (error) {
+//         console.error('Error fetching wishlist:', error);
+//         res.status(500).send({ error: 'Failed to fetch wishlist' });
+//       }
+//     });
 
     
-    app.post('/wishlist', async (req, res) => {
-      try {
-        const wishedProperty = req.body;
-        const id = req.body.propertyId;
-        const email = req.query.email
-        const wishExists = await wishlistCollection.findOne({
-          $and: [
-            { propertyId: id },
-            { WisherEmail: email }
-          ]
-        });
+//     app.post('/wishlist', async (req, res) => {
+//       try {
+//         const wishedProperty = req.body;
+//         const id = req.body.propertyId;
+//         const email = req.query.email
+//         const wishExists = await wishlistCollection.findOne({
+//           $and: [
+//             { propertyId: id },
+//             { WisherEmail: email }
+//           ]
+//         });
         
-        if(!wishExists){
-          const result = await wishlistCollection.insertOne(wishedProperty);
-          res.send(result);
-        }
-        else(
-          res.send({message:"already exists in wishlist", insertedId: null})
-        )
-      } catch (error) {
-        console.error('Error inserting into wishlist:', error);
-        res.status(500).send({ error: 'Failed to add to wishlist' });
-      }
-    });
+//         if(!wishExists){
+//           const result = await wishlistCollection.insertOne(wishedProperty);
+//           res.send(result);
+//         }
+//         else(
+//           res.send({message:"already exists in wishlist", insertedId: null})
+//         )
+//       } catch (error) {
+//         console.error('Error inserting into wishlist:', error);
+//         res.status(500).send({ error: 'Failed to add to wishlist' });
+//       }
+//     });
 
 
-    //remove/delete a property from wishlist
-app.delete('/wishlist/delete/:id',async(req,res)=>{
-  const id = req.params.id
-  const query = {_id: new ObjectId(id)}
-  const result = await wishlistCollection.deleteOne(query)
-  res.send(result)
-})
+//     //remove/delete a property from wishlist
+// app.delete('/wishlist/delete/:id',async(req,res)=>{
+//   const id = req.params.id
+//   const query = {_id: new ObjectId(id)}
+//   const result = await wishlistCollection.deleteOne(query)
+//   res.send(result)
+// })
     
 
-//add a review
-  app.post("/review", async(req,res)=> {
-    const Review = req.body
-    const result = await reviewCollection.insertOne(Review)
-    res.send(result)
-  })
-//all reviews of in details page
-  app.get('/propertyReview', async(req,res)=>{
-    const id = req.query.id
-    const result = await reviewCollection.find({propertyId: id}).toArray()
-    res.send(result)
-  })
+// //add a review
+//   app.post("/review", async(req,res)=> {
+//     const Review = req.body
+//     const result = await reviewCollection.insertOne(Review)
+//     res.send(result)
+//   })
+// //all reviews of in details page
+//   app.get('/propertyReview', async(req,res)=>{
+//     const id = req.query.id
+//     const result = await reviewCollection.find({propertyId: id}).toArray()
+//     res.send(result)
+//   })
 
 
-//all reviews of in details page
-app.get('/myReviews', async(req,res)=>{
-  const email = req.query.email
-  const result = await reviewCollection.find({ReviewerEmail:email}).toArray()
-  res.send(result)
-})
-app.get('/latestReview', async(req,res)=>{
-  const result = await reviewCollection.find().sort({SortingTime: -1}).toArray()
-  res.send(result)
-})
+// //all reviews of in details page
+// app.get('/myReviews', async(req,res)=>{
+//   const email = req.query.email
+//   const result = await reviewCollection.find({ReviewerEmail:email}).toArray()
+//   res.send(result)
+// })
+// app.get('/latestReview', async(req,res)=>{
+//   const result = await reviewCollection.find().sort({SortingTime: -1}).toArray()
+//   res.send(result)
+// })
 
-//delete user
-app.delete('/myReviews/delete/:id',async(req,res)=>{
-  const id = req.params.id
-  const query = {_id: new ObjectId(id)}
-  const result = await reviewCollection.deleteOne(query)
-  res.send(result)
-})
+// //delete user
+// app.delete('/myReviews/delete/:id',async(req,res)=>{
+//   const id = req.params.id
+//   const query = {_id: new ObjectId(id)}
+//   const result = await reviewCollection.deleteOne(query)
+//   res.send(result)
+// })
 
-//all reviews from manage reviews page
-app.get('/allReviews', async(req,res)=>{
-  const result = await reviewCollection.find().toArray()
-  res.send(result)
-})
+// //all reviews from manage reviews page
+// app.get('/allReviews', async(req,res)=>{
+//   const result = await reviewCollection.find().toArray()
+//   res.send(result)
+// })
 
-// agent profiles:
+// // agent profiles:
 
-app.get("/agentProfiles", async(req,res)=> {
-  const result = await userCollection.find({role: 'agent'}).toArray()
-  res.send(result)
-} )
-
-
+// app.get("/agentProfiles", async(req,res)=> {
+//   const result = await userCollection.find({role: 'agent'}).toArray()
+//   res.send(result)
+// } )
 
 
-//offer
 
-app.get("/getOfferingProperty", async(req,res)=>{
-  const id = req.query.id
-  const query = {_id: new ObjectId(id)}
-  const property= await propertyCollection.findOne(query)
-  res.send(property)
-})
 
-app.post('/makeOffer', async (req, res) => {
+//details
+
+app.get("/productDetails", async (req, res) => {
   try {
-    const id = req.body.propertyId;
-    const email = req.query.email
-    const offerExists = await offerCollection.findOne({propertyId: id, BuyerEmail:email})
-    if(!offerExists){
-      const result = await offerCollection.insertOne(req.body);
-      res.send(result);
+    const id = req.query.id;
+    const query = { _id: new ObjectId(id) };
+    const product = await productCollection.findOne(query);
+
+    if (product) {
+      res.send(product);
+    } else {
+      res.status(404).send({ message: "Product not found" });
     }
-    else(
-      res.send({message:"offer already exists", insertedId: null})
-    )
   } catch (error) {
-    console.error('Error making an offer:', error);
-    res.status(500).send({ error: 'Failed to make an offer' });
+    res.status(500).send({ message: "Server error", error });
   }
 });
-
-//bought property page:
-
-app.get("/boughtProperties", async(req,res)=>{
-  const email = req.query.email
-  const query = {BuyerEmail: email}
-  const properties= await offerCollection.find(query).toArray()
-  res.send(properties)
-})
-
-//requested Properties page
-app.get("/requestedProperties", async(req,res)=>{
-  const email = req.query.email
-  const query = {AgentEmail: email}
-  const properties= await offerCollection.find(query).toArray()
-  res.send(properties)
-})
-
-
-// agent verification of requested Properties
-app.patch("/requestedProperty", async(req,res)=>{
-  const id = req.query.id
-  const property = req.body
-  const propertyId = req.query.propertyId
-  const filter = {_id: new ObjectId(id)}
-
-
-  const verifiedProperty = {
-      $set: {
-        Status: property.Status
-      }
-  }
-
-  if(property.Status === 'accepted'){
-    const rejectAll = await offerCollection.updateMany(
-      {
-        $and: [
-          { _id: { $not: { $eq: new ObjectId(id) } } },
-          { propertyId: propertyId }
-        ]
-      },
-      { $set: { Status: "rejected" } }
-    );
-  }
-
-  const result = await offerCollection.updateOne(filter,verifiedProperty)
-  res.send(result)
-
-})
-
-
-//payment page
-app.get("/getInfoForPayment", async(req,res)=>{
-  const id = req.query.id
-  const query = {_id: new ObjectId(id)}
-  const property= await offerCollection.findOne(query)
-  res.send(property)
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -686,17 +606,6 @@ app.get("/getInfoForPayment", async(req,res)=>{
     
 
 
-    app.post("/allProducts", async(req,res)=> {
-      const propertyId = req.body.propertyId
-      const adExists = await productCollection.findOne({propertyId: propertyId})
-      if(!adExists){
-      const result = await productCollection.insertOne(req.body)
-      res.send(result)
-      }
-      else{
-        res.send({message: "Property already advertised"})
-      }
-    })
 
    
     app.get("/allProducts", async(req,res)=>{
