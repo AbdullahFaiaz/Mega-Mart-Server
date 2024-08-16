@@ -618,120 +618,6 @@ app.get("/getInfoForPayment", async(req,res)=>{
 
 
 
-// pagination count
-app.get("/productCount",async(req,res)=>{
-  const count = await panjabiCollection.estimatedDocumentCount()
-  res.send({count})
-})
-// pagination count from all product page
-app.get("/allProducts/productCount",async(req,res)=>{
-  const count = await panjabiCollection.estimatedDocumentCount()
-  res.send({count})
-})
-
-
-
-//read all products from home page
-app.get("/products", async(req,res)=>{
-  const page = parseInt(req.query.page)
-  const size = parseInt(req.query.size) 
-    // console.log("getting ",page,size)
-
-    const result = await panjabiCollection.find()
-    .skip(page*size)
-    .limit(size)
-    .toArray()
-    res.send(result)
-})
-//read all properties from manage all properties page of admin dashboard
-
-app.get("/allProperties", async(req,res)=>{
-  const cursor = propertyCollection.find()
-  const result = await cursor.toArray()
-  res.send(result)
-})
-//read all verified products from all properties page of navbar
-
-app.get("/allVerifiedProperties", async(req,res)=>{
-  const cursor = propertyCollection.find({ $and: [{Status: 'verified'},{role: {$ne: 'fraud'}},{role:'agent'}]})
-  const result = await cursor.toArray()
-  res.send(result)
-})
-
-//admin verification 
-app.patch("/verifyProperty", async(req,res)=>{
-  const id = req.query.id
-  const property = req.body
-
-  const filter = {_id: new ObjectId(id)}
-  console.log("Verificatin of ", property)
-  //make a doc if no such doc exists (because it is put, not patch)
-  // const options = {upsert: true }
-  const verifiedProperty = {
-      $set: {
-        Status: property.Status
-      }
-  }
-  const result = await propertyCollection.updateOne(filter,verifiedProperty)
-  res.send(result)
-})
-
-        // read a product from all properties page of navbar 
-        app.get("/allProperties/details", async(req,res)=>{
-          const id = req.query.id
-          const query = {_id: new ObjectId(id)}
-          const product= await productCollection.findOne(query)
-          res.send(product)
-        })
-//update from update page:
-          // read a product from my list page
-          app.get("/updateProperty", async(req,res)=>{
-            const id = req.query.id
-            const query = {_id: new ObjectId(id)}
-            const product= await propertyCollection.findOne(query)
-            res.send(product)
-          })
-  app.patch("/updateProperty", async(req,res)=>{
-    const id = req.query.id
-    const property = req.body
-    console.log(id)
-
-    const filter = {_id: new ObjectId(id)}
-    //make a doc if no such doc exists (because it is put, not patch)
-    // const options = {upsert: true }
-    const updatedProperty = {
-        $set: {
-          Title: property.Title,
-          Location: property.Location,
-          Image: property.Image,
-          minPrice: property.minPrice,
-          maxPrice: property.maxPrice,
-        }
-    }
-    const result = await propertyCollection.updateOne(filter,updatedProperty)
-    res.send(result)
-  })
-
-
-//read all verified properties for ad
-
-app.get("/allVerifiedPropertiesForAd", async(req,res)=>{
-  const cursor = propertyCollection.find({Status: 'verified'})
-  const result = await cursor.toArray()
-  res.send(result)
-})
-
-
-  
-//delete operation from my list page:
-      app.delete("/products/:id", async(req,res)=>{
-        const id = req.params.id
-        console.log('plz delete', id)
-        const query = {_id: new ObjectId(id)}
-        const result = await panjabiCollection.deleteOne(query)
-        res.send(result)
-      })
-
 
 
 
@@ -798,12 +684,7 @@ app.get("/allVerifiedPropertiesForAd", async(req,res)=>{
     })
 
     
-    app.get("/mySoldProperties", async(req,res)=>{
 
-      const result = await paymentCollection.find({AgentEmail: req.query.email}).toArray()
-      
-      res.send(result)
-    })
 
     app.post("/allProducts", async(req,res)=> {
       const propertyId = req.body.propertyId
@@ -836,21 +717,11 @@ app.get("/allVerifiedPropertiesForAd", async(req,res)=>{
     })
 
     // pagination count --public
-app.get("/postCount",logger,async(req,res)=>{
+app.get("/productCount",logger,async(req,res)=>{
   const count = await productCollection.estimatedDocumentCount()
   res.send({count})
 })
 
-app.get("/allPosts",logger,async(req,res)=>{
-  const page = parseInt(req.query.page)
-  const size = parseInt(req.query.size) 
-  console.log("getting ",page,size)
-  const result = await postCollection.find().sort( { "Deadline": 1 } )
-  .skip(page*size)
-  .limit(size)
-  .toArray()
-  res.send(result)
-})
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
