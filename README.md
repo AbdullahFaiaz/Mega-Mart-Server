@@ -20,4 +20,4 @@ An E-commerce Website
 - ### Technologies Used:
 **ReactJs, JavaScript, Tailwind CSS, MongoDB, Firebase, ExpressJs**
 
-- Clone this project and use ***npm install*** and ***npm run dev*** command to locally run this project.
+- Clone this project and use ***npm install*** and ***npm run dev*** command to locally run this ReactJS project.
